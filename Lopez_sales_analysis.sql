@@ -24,7 +24,6 @@ SELECT date_format(Transaction_Date, '%Y-%m') AS Month,
 	   sum(Sale_Amount) AS Monthly_Revenue
 FROM Store_Sales
 WHERE Store_ID BETWEEN 701 AND 718
--- I still use those ID's based off of my previous query
 GROUP BY Month 
 ORDER BY Month;
 -- I used ORDER BY to have the months ascend from january to december to have the data be readable a lot easier
@@ -32,13 +31,10 @@ ORDER BY Month;
 -- Provide a comparison of total revenue for the specific sales territory and the region it belongs to.
 -- Would have to find a way to unite tables in order to compare revenue for the territory and the region
 SELECT 'Colorado (In-Store)' AS Territory, 
-		-- These are my physical stores
 	    sum(Sale_Amount) AS Total_Revenue 
-        -- Want to know there revenue
 FROM Store_Sales
 WHERE Store_ID BETWEEN 701 AND 718
 UNION ALL 
--- Want to combine the two tables to compare
 SELECT 'WEST (Online)' AS Territory,
 	    sum(SalesTotal) AS Total_Revenue
 FROM Online_Sales
@@ -57,6 +53,15 @@ JOIN Inventory_Categories ic ON p.CategoryID = ic.CategoryID
 WHERE ss.Store_ID BETWEEN 701 AND 718
 GROUP BY Month, ic.Category
 ORDER BY Month, ic.Category;
+-- ====== -- 
+SELECT ic.Category,
+	   round(avg(ss.Sale_Amount), 2) AS Avg_Transaction_Size
+FROM Store_Sales ss
+JOIN Products p ON ss.Prod_Num = p.ProdNum
+JOIN Inventory_Categories ic ON p.CategoryID = ic.CategoryID
+WHERE ss.Store_ID BETWEEN 701 AND 718
+GROUP BY ic.Category
+ORDER BY ic.Category;
 
 -- Can you provide a ranking of in-store sales performance by each store in the sales territory, or a ranking of online sales performance by state within an online sales territory?
 SELECT sl.StoreLocation AS Store,
